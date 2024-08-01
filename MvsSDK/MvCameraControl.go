@@ -2,8 +2,10 @@ package MvsSDK
 
 /*
 #cgo CFLAGS: -I../include
-#cgo windows amd64 LDFLAGS: -L${SRCDIR}/../lib/win64
-#cgo windows 386 LDFLAGS: -L${SRCDIR}/../lib/win32
+#cgo windows amd64 LDFLAGS: -L${SRCDIR}/../lib/win/32
+#cgo windows 386 LDFLAGS: -L${SRCDIR}/../lib/win/64
+#cgo linux amd64 LDFLAGS: -L${SRCDIR}/../lib/linux/32
+#cgo linux 386 LDFLAGS: -L${SRCDIR}/../lib/linux/64
 #cgo LDFLAGS: -lMvCameraControl -static
 #include "MvCameraControl.h"
 */
