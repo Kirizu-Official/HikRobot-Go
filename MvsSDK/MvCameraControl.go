@@ -1,12 +1,7 @@
 package MvsSDK
 
 /*
-#cgo CFLAGS: -I../include
-#cgo windows amd64 LDFLAGS: -L${SRCDIR}/../lib/win/64
-#cgo windows 386 LDFLAGS: -L${SRCDIR}/../lib/win/32
-#cgo linux amd64 LDFLAGS: -L${SRCDIR}/../lib/linux/64
-#cgo linux 386 LDFLAGS: -L${SRCDIR}/../lib/linux/32
-#cgo LDFLAGS: -lMvCameraControl -static
+#cgo pkg-config: hik-mvs
 #include "MvCameraControl.h"
 */
 import "C"

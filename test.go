@@ -13,11 +13,11 @@ func main() {
 	MvsSDK.Initialize()
 	MvsSDK.EnumerateTls()
 
-	code, res := MvsSDK.EnumDevices(MvsSDK.MvGigeDevice)
+	code, res := MvsSDK.EnumDevices(MvsSDK.MvLayerGigeDevice)
 	fmt.Println(code, len(res))
 
 	fmt.Printf("code:%d, 成功找到 %d 个设备\n", code, len(res))
-	fmt.Println(string(res[0].SpecialInfo.MvGigeDeviceInfo.ManufacturerName[:]), string(res[0].SpecialInfo.MvGigeDeviceInfo.ModelName[:]))
+	fmt.Println(res[0].TLayerType, string(res[0].SpecialInfo.MvGigeDeviceInfo.ModelName[:]), string(res[0].SpecialInfo.MvGigeDeviceInfo.SerialNumber[:]))
 
 	fmt.Println(MvsSDK.IsDeviceAccessible(res[0], MvsSDK.MvAccessExclusive))
 
@@ -25,8 +25,8 @@ func main() {
 	fmt.Println(device.CreateHandle(res[0]), "create")
 	fmt.Println(device.OpenDevice(MvsSDK.MvAccessExclusive, 0), "open")
 	fmt.Println(device.IsDeviceConnected())
-	//control := device.NewDeviceControl()
-	//control.OpenParamsGUI()
+	control := device.NewDeviceControl()
+	control.OpenParamsGUI()
 	camera := device.NewDeviceImage()
 	camera.OpenDevice(MvsSDK.MvAccessExclusive, 0)
 	camera.SetImageNodeNum(1)
