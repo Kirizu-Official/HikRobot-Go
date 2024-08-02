@@ -142,8 +142,8 @@ type DeviceControl struct {
 	*Device
 }
 
-func (d *DeviceControl) Init(Device *Device) {
-	d.Device = Device
+func (d *Device) NewDeviceControl() *DeviceControl {
+	return &DeviceControl{Device: d}
 }
 
 func (d *DeviceControl) InvalidateNodes() MvErrorCode {
@@ -281,4 +281,79 @@ func (d *DeviceControl) GetNodeInterfaceType(name string) (MvErrorCode, int) {
 	var value uint32
 	code := MvErrorCode(int32(C.MV_XML_GetNodeInterfaceType(d.Device.handel, C.CString(name), &value)))
 	return code, int(value)
+}
+
+type DeviceImage struct {
+	*Device
+}
+
+func (d *Device) NewDeviceImage() *DeviceImage {
+	return &DeviceImage{Device: d}
+}
+
+func (d *DeviceImage) StartGrabbing() MvErrorCode {
+
+	code := MvErrorCode(int32(C.MV_CC_StartGrabbing(d.Device.handel)))
+	return code
+}
+
+func (d *DeviceImage) StopGrabbing() MvErrorCode {
+
+	code := MvErrorCode(int32(C.MV_CC_StopGrabbing(d.Device.handel)))
+	return code
+}
+
+func (d *DeviceImage) GetImageForRGB(data *[]byte, dataSize uint32, timeOut int32) (MvErrorCode, MVFrameOutInfoEx) {
+	var pFrameInfo MVFrameOutInfoEx
+
+	code := MvErrorCode(int32(C.MV_CC_GetImageForRGB(d.handel, (*C.uchar)(unsafe.Pointer(data)), C.uint(dataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.int(timeOut))))
+	return code, pFrameInfo
+}
+
+func (d *DeviceImage) GetImageForBGR(data *[]byte, dataSize uint32, timeOut int32) (MvErrorCode, MVFrameOutInfoEx) {
+	var pFrameInfo MVFrameOutInfoEx
+
+	code := MvErrorCode(int32(C.MV_CC_GetImageForBGR(d.handel, (*C.uchar)(unsafe.Pointer(data)), C.uint(dataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.int(timeOut))))
+	return code, pFrameInfo
+}
+
+func (d *DeviceImage) GetImageBuffer(waitTime uint32, pFrame *MvFrameOut) MvErrorCode {
+	code := MvErrorCode(int32(C.MV_CC_GetImageBuffer(d.Device.handel, (*C.MV_FRAME_OUT)(unsafe.Pointer(pFrame)), C.uint(waitTime))))
+	return code
+}
+
+func (d *DeviceImage) FreeImageBuffer(pFrame *MvFrameOut) MvErrorCode {
+	code := MvErrorCode(int32(C.MV_CC_FreeImageBuffer(d.Device.handel, (*C.MV_FRAME_OUT)(unsafe.Pointer(pFrame)))))
+	return code
+}
+
+func (d *DeviceImage) GetOneFrameTimeout(pData *[MaxFrameSize]byte, pDataSize uint32, timeOut uint32) (MvErrorCode, MVFrameOutInfoEx) {
+	var pFrameInfo MVFrameOutInfoEx
+
+	code := MvErrorCode(int32(C.MV_CC_GetOneFrameTimeout(d.Device.handel, (*C.uchar)(unsafe.Pointer(pData)), C.uint(pDataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.uint(timeOut))))
+	return code, pFrameInfo
+}
+
+func (d *DeviceImage) ClearImageBuffer() MvErrorCode {
+	code := MvErrorCode(int32(C.MV_CC_ClearImageBuffer(d.Device.handel)))
+	return code
+}
+
+func (d *DeviceImage) GetValidImageNum() (MvErrorCode, uint32) {
+	var numRe uint32
+	code := MvErrorCode(int32(C.MV_CC_GetValidImageNum(d.Device.handel, (*C.uint)(unsafe.Pointer(&numRe)))))
+
+	return code, numRe
+}
+
+func (d *DeviceImage) SetImageNodeNum(num uint32) MvErrorCode {
+	code := MvErrorCode(int32(C.MV_CC_SetImageNodeNum(d.Device.handel, C.uint(num))))
+
+	return code
+}
+
+func (d *DeviceImage) SetGrabStrategy(enGrabStrategy uint32) MvErrorCode {
+	code := MvErrorCode(int32(C.MV_CC_SetGrabStrategy(d.Device.handel, (C.MV_GRAB_STRATEGY)(enGrabStrategy))))
+
+	return code
 }

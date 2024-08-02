@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/Kirizu-Official/HikRobot-Go/MvsSDK"
+	"os"
 )
 
 func main() {
@@ -24,4 +25,17 @@ func main() {
 	fmt.Println(device.CreateHandle(res[0]), "create")
 	fmt.Println(device.OpenDevice(MvsSDK.MvAccessExclusive, 0), "open")
 	fmt.Println(device.IsDeviceConnected())
+	//control := device.NewDeviceControl()
+	//control.OpenParamsGUI()
+	camera := device.NewDeviceImage()
+	camera.OpenDevice(MvsSDK.MvAccessExclusive, 0)
+	camera.SetImageNodeNum(1)
+	camera.StartGrabbing()
+	var data [MvsSDK.MaxFrameSize]byte
+	result, info := camera.GetOneFrameTimeout(&data, 10*1024*1024, 500)
+	camera.StopGrabbing()
+	camera.CloseDevice()
+	fmt.Println(result, info.Height, info.Height, info.ChunkHeight, info.ChunkWidth, info.FrameLen, info.PixelType)
+	os.WriteFile("test.jpg", data[:info.FrameLen], 0755)
+
 }

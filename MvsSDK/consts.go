@@ -181,3 +181,5 @@ const MvMaxXmlSymbolicNum = 64
 const MvMaxSymbolicLen = 64
 const MvMaxNodeNameLen = 64
 const MvMaxNodeErrorNum = 64
+
+const MaxFrameSize = 10 * 1024 * 1024
