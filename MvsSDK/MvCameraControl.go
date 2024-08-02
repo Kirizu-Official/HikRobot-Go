@@ -2,8 +2,8 @@ package MvsSDK
 
 /*
 #cgo CFLAGS: -I../include
-#cgo windows amd64 LDFLAGS: -L${SRCDIR}/../lib/win/32
-#cgo windows 386 LDFLAGS: -L${SRCDIR}/../lib/win/64
+#cgo windows amd64 LDFLAGS: -L${SRCDIR}/../lib/win/64
+#cgo windows 386 LDFLAGS: -L${SRCDIR}/../lib/win/32
 #cgo linux amd64 LDFLAGS: -L${SRCDIR}/../lib/linux/64
 #cgo linux 386 LDFLAGS: -L${SRCDIR}/../lib/linux/32
 #cgo LDFLAGS: -lMvCameraControl -static
@@ -147,7 +147,7 @@ func (d *DeviceControl) Init(Device *Device) {
 }
 
 func (d *DeviceControl) InvalidateNodes() MvErrorCode {
-	code := MvErrorCode(int32(C.MV_CC_GetCameraInfo(d.Device.handel)))
+	code := MvErrorCode(int32(C.MV_CC_InvalidateNodes(d.Device.handel)))
 	return code
 }
 
@@ -182,7 +182,7 @@ func (d *DeviceControl) GetEnumEntrySymbolic(key string) (MvErrorCode, MvccEnumE
 	return code, value
 }
 
-func (d *DeviceControl) SetEnumValueByString(key string, value uint32) MvErrorCode {
+func (d *DeviceControl) SetEnumValueByString(key string, value string) MvErrorCode {
 	code := MvErrorCode(int32(C.MV_CC_SetEnumValueByString(d.Device.handel, C.CString(key), C.CString(value))))
 	return code
 }
@@ -202,7 +202,7 @@ func (d *DeviceControl) SetFloatValue(key string, value float32) MvErrorCode {
 func (d *DeviceControl) GetBoolValue(key string) (MvErrorCode, bool) {
 	var value byte
 
-	code := MvErrorCode(int32(C.MV_CC_GetFloatValue(d.Device.handel, C.CString(key), (*C.char)(unsafe.Pointer(&value)))))
+	code := MvErrorCode(int32(C.MV_CC_GetBoolValue(d.Device.handel, C.CString(key), (*C.char)(unsafe.Pointer(&value)))))
 	return code, value == 1
 }
 
@@ -213,7 +213,7 @@ func (d *DeviceControl) SetBoolValue(key string, value bool) MvErrorCode {
 	} else {
 		wr = 0
 	}
-	code := MvErrorCode(int32(C.MV_CC_SetFloatValue(d.Device.handel, C.CString(key), C.char(wr))))
+	code := MvErrorCode(int32(C.MV_CC_SetBoolValue(d.Device.handel, C.CString(key), C.char(wr))))
 	return code
 }
 
@@ -265,20 +265,20 @@ func (d *DeviceControl) WriteMemory(buf *[]byte, addr int64, size int64) MvError
 	return code
 }
 
-func (d *DeviceControl) GetGenICamXML(buf *[]byte, addr int64, size int64) (MvErrorCode, uint32) {
+func (d *DeviceControl) GetGenICamXML(buf *[]byte, size int64) (MvErrorCode, uint32) {
 	var readSize uint32
-	code := MvErrorCode(int32(C.MV_XML_GetGenICamXML(d.Device.handel, unsafe.Pointer(buf), C.uint(addr), C.uint(size), (*C.uint)(unsafe.Pointer(&readSize)))))
+	code := MvErrorCode(int32(C.MV_XML_GetGenICamXML(d.Device.handel, (*C.uchar)(unsafe.Pointer(buf)), C.uint(size), (*C.uint)(unsafe.Pointer(&readSize)))))
 	return code, readSize
 }
 
 func (d *DeviceControl) GetNodeAccessMode(name string) (MvErrorCode, int) {
-	var value int32
-	code := MvErrorCode(int32(C.MV_XML_GetNodeAccessMode(d.Device.handel, C.CString(name), (*C.int)(unsafe.Pointer(&value)))))
+	var value uint32
+	code := MvErrorCode(int32(C.MV_XML_GetNodeAccessMode(d.Device.handel, C.CString(name), &value)))
 	return code, int(value)
 }
 
 func (d *DeviceControl) GetNodeInterfaceType(name string) (MvErrorCode, int) {
-	var value int32
-	code := MvErrorCode(int32(C.MV_XML_GetNodeInterfaceType(d.Device.handel, C.CString(name), (*C.int)(unsafe.Pointer(&value)))))
+	var value uint32
+	code := MvErrorCode(int32(C.MV_XML_GetNodeInterfaceType(d.Device.handel, C.CString(name), &value)))
 	return code, int(value)
 }
