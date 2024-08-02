@@ -194,3 +194,130 @@ type MvXofDeviceInfo struct {
 	DeviceID         [InfoMaxBufferSize]byte
 	Reserved         [7]uint32
 }
+
+/**
+typedef struct _MVCC_INTVALUE_EX_T
+{
+    int64_t             nCurValue;                                  ///< [OUT] \~chinese 当前值                 \~english Current Value
+    int64_t             nMax;                                       ///< [OUT] \~chinese 最大值                 \~english Max
+    int64_t             nMin;                                       ///< [OUT] \~chinese 最小值                 \~english Min
+    int64_t             nInc;                                       ///< [OUT] \~chinese Inc                    \~english Inc
+
+    unsigned int        nReserved[16];                              ///<       \~chinese 预留                   \~english Reserved
+
+}
+*/
+
+type MvccIntValueEx struct {
+	CurValue int64
+	Max      int64
+	Min      int64
+	Inc      int64
+	Reserved [16]uint32
+}
+
+/**
+typedef struct _MVCC_ENUMVALUE_T
+{
+    unsigned int        nCurValue;                                  ///< [OUT] \~chinese 当前值                 \~english Current Value
+    unsigned int        nSupportedNum;                              ///< [OUT] \~chinese 数据的有效数据个数     \~english Number of valid data
+    unsigned int        nSupportValue[MV_MAX_XML_SYMBOLIC_NUM];     ///< [OUT] \~chinese 支持的枚举值           \~english Support Value
+
+    unsigned int        nReserved[4];                               ///<       \~chinese 预留                   \~english Reserved
+
+}MVCC_ENUMVALUE;
+*/
+
+type MvccEnumValue struct {
+	CurValue     uint32
+	SupportedNum uint32
+	SupportValue [MvMaxXmlSymbolicNum]uint32
+	Reserved     [4]uint32
+}
+
+/**
+typedef struct _MVCC_ENUMENTRY_T
+{
+    unsigned int        nValue;                                     ///< [IN]  \~chinese 指定值                 \~english Value
+    char                chSymbolic[MV_MAX_SYMBOLIC_LEN];            ///< [OUT] \~chinese 指定值对应的符号       \~english Symbolic
+
+    unsigned int        nReserved[4];                               ///< \~chinese 预留                         \~english Reserved
+
+}MVCC_ENUMENTRY;
+*/
+
+type MvccEnumEntry struct {
+	Value    uint32
+	Symbolic [MvMaxSymbolicLen]byte
+	Reserved [4]uint32
+}
+
+/**
+typedef struct _MVCC_FLOATVALUE_T
+{
+    float               fCurValue;                                  ///< [OUT] \~chinese 当前值                 \~english Current Value
+    float               fMax;                                       ///< [OUT] \~chinese 最大值                 \~english Max
+    float               fMin;                                       ///< [OUT] \~chinese 最小值                 \~english Min
+
+    unsigned int        nReserved[4];                               ///<       \~chinese 预留                   \~english Reserved
+
+}MVCC_FLOATVALUE;
+*/
+
+type MvccFloatValue struct {
+	CurValue float32
+	Max      float32
+	Min      float32
+	Reserved [4]uint32
+}
+
+/**
+typedef struct _MVCC_STRINGVALUE_T
+{
+    char                chCurValue[256];                            ///< [OUT] \~chinese 当前值                 \~english Current Value
+
+    int64_t             nMaxLength;                                 ///< [OUT] \~chinese 最大长度               \~english MaxLength
+    unsigned int        nReserved[2];                               ///<       \~chinese 预留                   \~english Reserved
+
+}MVCC_STRINGVALUE;
+*/
+
+type MvccStringValue struct {
+	CurValue  [256]byte
+	MaxLength int64
+	Reserved  [2]uint32
+}
+
+/**
+typedef struct _MVCC_NODE_ERROR_T
+{
+    char                strName[MV_MAX_NODE_NAME_LEN];              ///< \~chinese 节点名称                     \~english Nodes Name
+    MVCC_NODE_ERR_TYPE  enErrType;									///< \~chinese 错误类型                     \~english Error Type
+
+    unsigned int        nReserved[4];                               ///< \~chinese 预留                         \~english Reserved
+
+}MVCC_NODE_ERROR;
+*/
+
+type MvccNodeError struct {
+	Name     [MvMaxNodeNameLen]byte
+	ErrType  int32
+	Reserved [4]uint32
+}
+
+/**
+typedef struct _MVCC_NODE_ERROR_LIST_T
+{
+    unsigned int        nErrorNum;                                  ///< \~chinese 错误个数                     \~english Number of Error
+    MVCC_NODE_ERROR     stNodeError[MV_MAX_NODE_ERROR_NUM];         ///< \~chinese 错误信息                     \~english Error Name
+
+    unsigned int        nReserved[4];                               ///< \~chinese 预留                         \~english Reserved
+
+}MVCC_NODE_ERROR_LIST;
+*/
+
+type MvccNodeErrorList struct {
+	ErrorNum  uint32
+	NodeError [MvMaxNodeErrorNum]MvccNodeError
+	Reserved  [4]uint32
+}
