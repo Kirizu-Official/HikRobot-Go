@@ -6,7 +6,6 @@ package MvsSDK
 */
 import "C"
 import (
-	"fmt"
 	"unsafe"
 )
 
@@ -52,6 +51,9 @@ func EnumDevices(nTLayerType uint32) (MvErrorCode, []MvCcDeviceInfo) {
 	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
 
 	code := MvErrorCode(int32(C.MV_CC_EnumDevices(C.uint(nTLayerType), (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)))))
+	if code != MvOK {
+		return code, nil
+	}
 	var res []MvCcDeviceInfo
 	num := int(uint32(pstDevList.nDeviceNum))
 	for i := 0; i < num; i++ {
@@ -65,8 +67,10 @@ func EnumDevicesEx(nTLayerType uint32, strManufacturerName string) (MvErrorCode,
 	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
 
 	code := MvErrorCode(int32(C.MV_CC_EnumDevicesEx(C.uint(nTLayerType), (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)), C.CString(strManufacturerName))))
+	if code != MvOK {
+		return code, nil
+	}
 	var res []MvCcDeviceInfo
-
 	num := int(uint32(pstDevList.nDeviceNum))
 	for i := 0; i < num; i++ {
 		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[0])))
@@ -79,7 +83,9 @@ func EnumDevicesEx2(nTLayerType uint32, strManufacturerName string, enSortMethod
 	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
 
 	code := MvErrorCode(int32(C.MV_CC_EnumDevicesEx2(C.uint(nTLayerType), (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)), C.CString(strManufacturerName), C.MV_SORT_METHOD(enSortMethod))))
-
+	if code != MvOK {
+		return code, nil
+	}
 	var res []MvCcDeviceInfo
 	num := int(uint32(pstDevList.nDeviceNum))
 	for i := 0; i < num; i++ {
@@ -89,11 +95,23 @@ func EnumDevicesEx2(nTLayerType uint32, strManufacturerName string, enSortMethod
 	return code, res
 }
 
-func IsDeviceAccessible(pstDevInfo MvCcDeviceInfo, nAccessMode uint32) bool {
+func EnumDevicesByInterface(handle unsafe.Pointer) (MvErrorCode, []MvCcDeviceInfo) {
+	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
+	code := MvErrorCode(int32(C.MV_CC_EnumDevicesByInterface(handle, (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)))))
+	if code != MvOK {
+		return code, nil
+	}
+	var res []MvCcDeviceInfo
+	num := int(uint32(pstDevList.nDeviceNum))
+	for i := 0; i < num; i++ {
+		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[0])))
+	}
+	return code, res
+}
 
+func IsDeviceAccessible(pstDevInfo MvCcDeviceInfo, nAccessMode uint32) bool {
 	code := byte(C.MV_CC_IsDeviceAccessible((*C.struct__MV_CC_DEVICE_INFO_)(unsafe.Pointer(&pstDevInfo)), C.uint(nAccessMode)))
-	fmt.Println(code)
-	return code == 1
+	return code == 1 // 1 = bool true
 }
 
 type Device struct {
@@ -131,6 +149,18 @@ func (d *Device) CloseDevice() MvErrorCode {
 
 func (d *Device) DestroyHandle() MvErrorCode {
 	return MvErrorCode(int32(C.MV_CC_DestroyHandle(d.handel)))
+}
+func (d *Device) LocalUpgrade(localFilePath string) MvErrorCode {
+	code := MvErrorCode(int32(C.MV_CC_LocalUpgrade(d.handel, C.CString(localFilePath))))
+	return code
+}
+func (d *Device) GetUpgradeProcess() (MvErrorCode, uint32) {
+	var process uint32
+	code := MvErrorCode(int32(C.MV_CC_GetUpgradeProcess(d.handel, (*C.uint)(unsafe.Pointer(&process)))))
+	if code != MvOK {
+		return code, 0
+	}
+	return code, process
 }
 
 type DeviceControl struct {
@@ -298,23 +328,27 @@ func (d *DeviceImage) StopGrabbing() MvErrorCode {
 	return code
 }
 
-func (d *DeviceImage) GetImageForRGB(data *[]byte, dataSize uint32, timeOut int32) (MvErrorCode, MVFrameOutInfoEx) {
-	var pFrameInfo MVFrameOutInfoEx
+// func (d *DeviceImage) GetImageForRGB(data *[]byte, dataSize uint32, timeOut int32) (MvErrorCode, MVFrameOutInfoEx) {
+// 	var pFrameInfo MVFrameOutInfoEx
+//
+// 	code := MvErrorCode(int32(C.MV_CC_GetImageForRGB(d.handel, (*C.uchar)(unsafe.Pointer(data)), C.uint(dataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.int(timeOut))))
+// 	return code, pFrameInfo
+// }
+//
+// func (d *DeviceImage) GetImageForBGR(data *[]byte, dataSize uint32, timeOut int32) (MvErrorCode, MVFrameOutInfoEx) {
+// 	var pFrameInfo MVFrameOutInfoEx
+//
+// 	code := MvErrorCode(int32(C.MV_CC_GetImageForBGR(d.handel, (*C.uchar)(unsafe.Pointer(data)), C.uint(dataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.int(timeOut))))
+// 	return code, pFrameInfo
+// }
 
-	code := MvErrorCode(int32(C.MV_CC_GetImageForRGB(d.handel, (*C.uchar)(unsafe.Pointer(data)), C.uint(dataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.int(timeOut))))
-	return code, pFrameInfo
-}
-
-func (d *DeviceImage) GetImageForBGR(data *[]byte, dataSize uint32, timeOut int32) (MvErrorCode, MVFrameOutInfoEx) {
-	var pFrameInfo MVFrameOutInfoEx
-
-	code := MvErrorCode(int32(C.MV_CC_GetImageForBGR(d.handel, (*C.uchar)(unsafe.Pointer(data)), C.uint(dataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.int(timeOut))))
-	return code, pFrameInfo
-}
-
-func (d *DeviceImage) GetImageBuffer(waitTime uint32, pFrame *MvFrameOut) MvErrorCode {
-	code := MvErrorCode(int32(C.MV_CC_GetImageBuffer(d.Device.handel, (*C.MV_FRAME_OUT)(unsafe.Pointer(pFrame)), C.uint(waitTime))))
-	return code
+func (d *DeviceImage) GetImageBuffer(waitTime uint32) (MvErrorCode, *MvFrameOut) {
+	var pFrameInfo MvFrameOut
+	code := MvErrorCode(int32(C.MV_CC_GetImageBuffer(d.Device.handel, (*C.MV_FRAME_OUT)(unsafe.Pointer(&pFrameInfo)), C.uint(waitTime))))
+	if code != MvOK {
+		return code, nil
+	}
+	return code, &pFrameInfo
 }
 
 func (d *DeviceImage) FreeImageBuffer(pFrame *MvFrameOut) MvErrorCode {
@@ -322,11 +356,13 @@ func (d *DeviceImage) FreeImageBuffer(pFrame *MvFrameOut) MvErrorCode {
 	return code
 }
 
-func (d *DeviceImage) GetOneFrameTimeout(pData *[MaxFrameSize]byte, pDataSize uint32, timeOut uint32) (MvErrorCode, MVFrameOutInfoEx) {
+func (d *DeviceImage) GetOneFrameTimeout(pData *[MaxFrameSize]byte, pDataSize uint32, timeOut uint32) (MvErrorCode, *MVFrameOutInfoEx) {
 	var pFrameInfo MVFrameOutInfoEx
-
 	code := MvErrorCode(int32(C.MV_CC_GetOneFrameTimeout(d.Device.handel, (*C.uchar)(unsafe.Pointer(pData)), C.uint(pDataSize), (*C.MV_FRAME_OUT_INFO_EX)(unsafe.Pointer(&pFrameInfo)), C.uint(timeOut))))
-	return code, pFrameInfo
+	if code != MvOK {
+		return code, nil
+	}
+	return code, &pFrameInfo
 }
 
 func (d *DeviceImage) ClearImageBuffer() MvErrorCode {
@@ -347,8 +383,23 @@ func (d *DeviceImage) SetImageNodeNum(num uint32) MvErrorCode {
 	return code
 }
 
-func (d *DeviceImage) SetGrabStrategy(enGrabStrategy uint32) MvErrorCode {
+func (d *DeviceImage) SetGrabStrategy(enGrabStrategy MvGrabStrategy) MvErrorCode {
 	code := MvErrorCode(int32(C.MV_CC_SetGrabStrategy(d.Device.handel, (C.MV_GRAB_STRATEGY)(enGrabStrategy))))
 
 	return code
+}
+
+func (d *DeviceImage) SetOutputQueueSize(size uint32) MvErrorCode {
+	code := MvErrorCode(int32(C.MV_CC_SetOutputQueueSize(d.Device.handel, C.uint(size))))
+	return code
+}
+
+func (d *DeviceImage) GetPayloadSize() (MvErrorCode, uint64, uint32) {
+	var pnPayloadSize uint64
+	var pnAlignment uint32
+	code := MvErrorCode(int32(C.MV_CC_GetPayloadSize(d.Device.handel, (*C.ulonglong)(unsafe.Pointer(&pnPayloadSize)), (*C.uint)(unsafe.Pointer(&pnAlignment)))))
+	if code != MvOK {
+		return code, 0, 0
+	}
+	return code, pnPayloadSize, pnAlignment
 }

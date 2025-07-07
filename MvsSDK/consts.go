@@ -183,3 +183,12 @@ const MvMaxNodeNameLen = 64
 const MvMaxNodeErrorNum = 64
 
 const MaxFrameSize = 10 * 1024 * 1024
+
+const (
+	MVGrabStrategyOneByOne         = 0 // MVGrabStrategyOneByOne /< \~chinese 从旧到新一帧一帧的获取图像   \~english Grab One By One
+	MVGrabStrategyLatestImagesOnly = 1 // MVGrabStrategyLatestImagesOnly /< \~chinese 获取列表中最新的一帧图像     \~english Grab The Latest Image
+	MVGrabStrategyLatestImages     = 2 // MVGrabStrategyLatestImages /< \~chinese 获取列表中最新的图像         \~english Grab The Latest Images
+	MVGrabStrategyUpcomingImage    = 3 // MVGrabStrategyUpcomingImage /< \~chinese 等待下一帧图像               \~english Grab The Upcoming Image
+)
+
+type MvGrabStrategy int
