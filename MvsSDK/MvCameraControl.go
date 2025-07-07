@@ -342,13 +342,15 @@ func (d *DeviceImage) StopGrabbing() MvErrorCode {
 // 	return code, pFrameInfo
 // }
 
-func (d *DeviceImage) GetImageBuffer(waitTime uint32) (MvErrorCode, *MvFrameOut) {
+func (d *DeviceImage) GetImageBuffer(waitTime uint32) (MvErrorCode, *MvFrameOut, []byte) {
 	var pFrameInfo MvFrameOut
 	code := MvErrorCode(int32(C.MV_CC_GetImageBuffer(d.Device.handel, (*C.MV_FRAME_OUT)(unsafe.Pointer(&pFrameInfo)), C.uint(waitTime))))
 	if code != MvOK {
-		return code, nil
+		return code, nil, nil
 	}
-	return code, &pFrameInfo
+
+	data := C.GoBytes(pFrameInfo.Addr, uintptr(pFrameInfo.FrameInfo.FrameLen))
+	return code, &pFrameInfo, data
 }
 
 func (d *DeviceImage) FreeImageBuffer(pFrame *MvFrameOut) MvErrorCode {
