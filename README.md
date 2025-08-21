@@ -5,7 +5,7 @@ HikRobot-Go是一个使用Go语言编写的海康机器人SDK，旨在提供一�
 go get -u github.com/Kirizu-Official/HikRobot-Go
 ```
 ### 安装MVS
-请查看当前Release版本号，通常来说前几位对应MVS的版本号，如`4.5.1.1`对应MVS`4.5.1`版本，`4.6.0.1`对应MVS`4.6.0`宝宝，然后在 [海康官网](https://www.hikrobotics.com/cn/machinevision/service/download/?module=0) 下载对应版本的MVS客户端安装，通常开发环境只需要安装MVS客户端即可，无需安装 MVS Runtime 组件包。
+请查看当前Release版本号，通常来说前几位对应MVS的版本号，如`4.5.1.1`对应MVS`4.5.1`版本，`4.6.0.1`对应MVS`4.6.0`版本，然后在 [海康官网](https://www.hikrobotics.com/cn/machinevision/service/download/?module=0) 下载对应版本的MVS客户端安装，通常开发环境只需要安装MVS客户端即可，无需安装 MVS Runtime 组件包。
 ### 配置CGO
 本项目采用CGO的方式调用SDK，使用前请确保CGO已正确配置，环境中必须包含gcc编译器
 ```bash
