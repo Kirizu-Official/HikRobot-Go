@@ -1,0 +1,10 @@
+prefix=E:/MVS
+exec_prefix=${prefix}
+includedir=${prefix}/Development/Includes
+libdir=${prefix}/Development/Libraries/win64
+
+Name: hik-mvs
+Description: Hikvision HikRobot MVS SDK
+Version: 1.0
+Cflags: -I${includedir}
+Libs: -L${libdir} -lMvCameraControl
