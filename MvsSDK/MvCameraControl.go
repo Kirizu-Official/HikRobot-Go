@@ -2,6 +2,7 @@ package MvsSDK
 
 /*
 #cgo pkg-config: hik-mvs
+#cgo CFLAGS: -std=c17
 #include "MvCameraControl.h"
 #include <stdlib.h>
 */
