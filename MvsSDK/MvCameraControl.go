@@ -3,6 +3,7 @@ package MvsSDK
 /*
 #cgo pkg-config: hik-mvs
 #include "MvCameraControl.h"
+#include <stdlib.h>
 */
 import "C"
 import (
@@ -151,7 +152,9 @@ func (d *Device) DestroyHandle() MvErrorCode {
 	return MvErrorCode(int32(C.MV_CC_DestroyHandle(d.handel)))
 }
 func (d *Device) LocalUpgrade(localFilePath string) MvErrorCode {
-	code := MvErrorCode(int32(C.MV_CC_LocalUpgrade(d.handel, C.CString(localFilePath))))
+	pathStr := C.CString(localFilePath)
+	code := MvErrorCode(int32(C.MV_CC_LocalUpgrade(d.handel, unsafe.Pointer(pathStr))))
+	C.free(unsafe.Pointer(pathStr))
 	return code
 }
 func (d *Device) GetUpgradeProcess() (MvErrorCode, uint32) {
@@ -349,7 +352,7 @@ func (d *DeviceImage) GetImageBuffer(waitTime uint32) (MvErrorCode, *MvFrameOut,
 		return code, nil, nil
 	}
 
-	data := C.GoBytes(pFrameInfo.Addr, uintptr(pFrameInfo.FrameInfo.FrameLen))
+	data := C.GoBytes(pFrameInfo.Addr, C.int(pFrameInfo.FrameInfo.FrameLen))
 	return code, &pFrameInfo, data
 }
 
