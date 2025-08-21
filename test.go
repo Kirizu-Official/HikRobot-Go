@@ -2,21 +2,30 @@ package main
 
 import (
 	"fmt"
-	"github.com/Kirizu-Official/HikRobot-Go/MvsSDK"
 	"os"
+
+	"github.com/Kirizu-Official/HikRobot-Go/MvsSDK"
 )
 
 func main() {
 
-	MvsSDK.GetSDKVersion()
-	fmt.Println("MVS SDK初始化成功...")
-	MvsSDK.Initialize()
+	go runTest()
+	for {
+
+	}
+}
+
+func runTest() {
+
+	fmt.Println("MVS SDK初始化成功...", MvsSDK.GetSDKVersion())
+	fmt.Println(MvsSDK.Initialize())
 	MvsSDK.EnumerateTls()
 
 	code, res := MvsSDK.EnumDevices(MvsSDK.MvLayerGigeDevice)
 	fmt.Println(code, len(res))
 
 	fmt.Printf("code:%d, 成功找到 %d 个设备\n", code, len(res))
+
 	fmt.Println(res[0].TLayerType, string(res[0].SpecialInfo.MvGigeDeviceInfo.ModelName[:]), string(res[0].SpecialInfo.MvGigeDeviceInfo.SerialNumber[:]))
 
 	fmt.Println(MvsSDK.IsDeviceAccessible(res[0], MvsSDK.MvAccessExclusive))
@@ -37,5 +46,6 @@ func main() {
 	camera.CloseDevice()
 	fmt.Println(result, info.Height, info.Height, info.ChunkHeight, info.ChunkWidth, info.FrameLen, info.PixelType)
 	os.WriteFile("test.jpg", data[:info.FrameLen], 0755)
-
+	device.CloseDevice()
+	fmt.Println(MvsSDK.Finalize())
 }
