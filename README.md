@@ -18,7 +18,7 @@ This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ```
 ### 配置pkg-config
-您需要下载 [hik-mvs.pc](https://github.com/Kirizu-Official/HikRobot-Go/blob/main/go.mod) 文件放到您的pkg-config库目录中，打开这个文件并修改第一行`prefix`设置为MVS安装目录，注意目录分隔符必须是`/`而不是`\`。
+您需要下载 [hik-mvs.pc](https://github.com/Kirizu-Official/HikRobot-Go/blob/main/hik-mvs.pc) 文件放到您的pkg-config库目录中，打开这个文件并修改第一行`prefix`设置为MVS安装目录，注意目录分隔符必须是`/`而不是`\`。
 
 设置完成后通过以下命令检查pkg-config是否已识别：
 ```bash
