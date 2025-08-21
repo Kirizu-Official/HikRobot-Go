@@ -27,3 +27,5 @@ go.work
 go.work.sum
 
 test.*
+
+MvSDKLog
