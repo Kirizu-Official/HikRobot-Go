@@ -18,12 +18,37 @@ type MvCcDeviceInfo struct {
 }
 
 type sSpecialInfo struct {
-	MvGigeDeviceInfo MvGigeDeviceInfo ///< [OUT] \~chinese GigE设备信息              \~english GigE Device Info
-	MvUsb3DeviceInfo MvUsb3DeviceInfo ///< [OUT] \~chinese USB设备信息               \~english USB Device Info
-	MvCamlDevInfo    MvCamlDevInfo    ///< [OUT] \~chinese CameraLink设备信息        \~english CameraLink Device Info
-	MvCmlDeviceInfo  MvCmlDeviceInfo  ///< [OUT] \~chinese 采集卡CameraLink设备信息     \~english CameraLink Device Info On Frame Grabber
-	MvCxpDeviceInfo  MvCxpDeviceInfo  ///< [OUT] \~chinese 采集卡CoaXPress设备信息     \~english CoaXPress Device Info On Frame Grabber
-	MvXofDeviceInfo  MvXofDeviceInfo  ///< [OUT] \~chinese 采集卡XoF设备信息          \~english XoF Device Info On Frame Grabber
+	MvGigeDeviceInfo MvGigeDeviceInfo     ///< [OUT] \~chinese GigE设备信息              \~english GigE Device Info
+	MvUsb3DeviceInfo MvUsb3DeviceInfo     ///< [OUT] \~chinese USB设备信息               \~english USB Device Info
+	MvCamlDevInfo    MvCamlDevInfo        ///< [OUT] \~chinese CameraLink设备信息        \~english CameraLink Device Info
+	MvCmlDeviceInfo  MvCmlDeviceInfo      ///< [OUT] \~chinese 采集卡CameraLink设备信息     \~english CameraLink Device Info On Frame Grabber
+	MvCxpDeviceInfo  MvCxpDeviceInfo      ///< [OUT] \~chinese 采集卡CoaXPress设备信息     \~english CoaXPress Device Info On Frame Grabber
+	MvXofDeviceInfo  MvXofDeviceInfo      ///< [OUT] \~chinese 采集卡XoF设备信息          \~english XoF Device Info On Frame Grabber
+	MvStVirInfo      MvGentlVirDeviceInfo ///< [OUT] \~chinese 采集卡虚拟设备信息, 仅支持协议MV_GENTL_VIR_DEVICE   \~english Virtual Device Info On Frame Grabber,device transport layer protocol type is MV_GENTL_VIR_DEVICE
+}
+
+//unsigned char       chInterfaceID[INFO_MAX_BUFFER_SIZE];     ///  \~chinese 采集卡ID       \~english Interface ID of Frame Grabber
+//unsigned char       chVendorName[INFO_MAX_BUFFER_SIZE];      ///< \~chinese 供应商名字       \~english Vendor name
+//unsigned char       chModelName[INFO_MAX_BUFFER_SIZE];       ///< \~chinese 型号名字         \~english Model name
+//unsigned char       chManufacturerInfo[INFO_MAX_BUFFER_SIZE];///< \~chinese 厂商信息         \~english Manufacturer information
+//unsigned char       chDeviceVersion[INFO_MAX_BUFFER_SIZE];   ///< \~chinese 相机版本         \~english Device version
+//unsigned char       chSerialNumber[INFO_MAX_BUFFER_SIZE];    ///< \~chinese 序列号           \~english Serial number
+//unsigned char       chUserDefinedName[INFO_MAX_BUFFER_SIZE]; ///< \~chinese 用户自定义名字   \~english User defined name
+//unsigned char       chDeviceID[INFO_MAX_BUFFER_SIZE];        ///< \~chinese 相机ID            \~english Device ID
+//unsigned char       chTLType[INFO_MAX_BUFFER_SIZE];          ///< \~chinese 传输层类型         \~english GenTL Type
+//unsigned int        nReserved[7];                              ///< \~chinese 保留字段      \~english Reserved
+
+type MvGentlVirDeviceInfo struct {
+	InterfaceID      [InfoMaxBufferSize]byte
+	VendorName       [InfoMaxBufferSize]byte
+	ModelName        [InfoMaxBufferSize]byte
+	ManufacturerInfo [InfoMaxBufferSize]byte
+	DeviceVersion    [InfoMaxBufferSize]byte
+	SerialNumber     [InfoMaxBufferSize]byte
+	UserDefinedName  [InfoMaxBufferSize]byte
+	DeviceID         [InfoMaxBufferSize]byte
+	TLType           [InfoMaxBufferSize]byte
+	Reserved         [7]uint32
 }
 
 //unsigned int        nIpCfgOption;                               ///< [OUT] \~chinese IP配置选项             \~english IP Configuration Options

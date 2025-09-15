@@ -59,7 +59,7 @@ func EnumDevices(nTLayerType uint32) (MvErrorCode, []MvCcDeviceInfo) {
 	var res []MvCcDeviceInfo
 	num := int(uint32(pstDevList.nDeviceNum))
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[0])))
+		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
 	}
 
 	return code, res
@@ -75,7 +75,7 @@ func EnumDevicesEx(nTLayerType uint32, strManufacturerName string) (MvErrorCode,
 	var res []MvCcDeviceInfo
 	num := int(uint32(pstDevList.nDeviceNum))
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[0])))
+		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
 	}
 
 	return code, res
@@ -91,7 +91,7 @@ func EnumDevicesEx2(nTLayerType uint32, strManufacturerName string, enSortMethod
 	var res []MvCcDeviceInfo
 	num := int(uint32(pstDevList.nDeviceNum))
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[0])))
+		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
 	}
 
 	return code, res
@@ -106,7 +106,7 @@ func EnumDevicesByInterface(handle unsafe.Pointer) (MvErrorCode, []MvCcDeviceInf
 	var res []MvCcDeviceInfo
 	num := int(uint32(pstDevList.nDeviceNum))
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[0])))
+		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
 	}
 	return code, res
 }
@@ -408,4 +408,15 @@ func (d *DeviceImage) GetPayloadSize() (MvErrorCode, uint64, uint32) {
 		return code, 0, 0
 	}
 	return code, pnPayloadSize, pnAlignment
+}
+
+// GetOptimalPacketSize Only for GigE cameras / 获取最佳数据包大小，仅适用于GigE相机
+func (d *DeviceControl) GetOptimalPacketSize() int32 {
+	return int32(C.MV_CC_GetOptimalPacketSize(d.Device.handel))
+}
+
+// SetResend Only for GigE cameras / 设置重传策略，仅适用于GigE相机
+func (d *DeviceControl) SetResend(enable, maxResendPercent, resendTimeout uint32) MvErrorCode {
+	code := MvErrorCode(C.MV_GIGE_SetResend(d.Device.handel, C.uint(enable), C.uint(maxResendPercent), C.uint(resendTimeout)))
+	return code
 }
