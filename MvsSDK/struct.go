@@ -6,6 +6,11 @@ import "unsafe"
 const MvMaxDeviceNum = 256
 const InfoMaxBufferSize = 64
 
+type MvCcDeviceInfoList struct {
+	DeviceNum uint32
+	Device    [MvMaxDeviceNum]*MvCcDeviceInfo
+}
+
 type MvCcDeviceInfo struct {
 	MajorVer    uint16
 	MinorVer    uint16

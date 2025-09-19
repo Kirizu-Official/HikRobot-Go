@@ -50,63 +50,63 @@ func EnumerateTls() int32 {
 
 // EnumDevices 枚举设备，支持枚举对应采集卡上的相机
 func EnumDevices(nTLayerType uint32) (MvErrorCode, []MvCcDeviceInfo) {
-	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
+	var pstDevList MvCcDeviceInfoList
 
 	code := MvErrorCode(int32(C.MV_CC_EnumDevices(C.uint(nTLayerType), (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)))))
 	if code != MvOK {
 		return code, nil
 	}
 	var res []MvCcDeviceInfo
-	num := int(uint32(pstDevList.nDeviceNum))
+	num := int(pstDevList.DeviceNum)
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
+		res = append(res, *pstDevList.Device[i])
 	}
 
 	return code, res
 }
 
 func EnumDevicesEx(nTLayerType uint32, strManufacturerName string) (MvErrorCode, []MvCcDeviceInfo) {
-	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
+	var pstDevList MvCcDeviceInfoList
 
 	code := MvErrorCode(int32(C.MV_CC_EnumDevicesEx(C.uint(nTLayerType), (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)), C.CString(strManufacturerName))))
 	if code != MvOK {
 		return code, nil
 	}
 	var res []MvCcDeviceInfo
-	num := int(uint32(pstDevList.nDeviceNum))
+	num := int(pstDevList.DeviceNum)
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
+		res = append(res, *pstDevList.Device[i])
 	}
 
 	return code, res
 }
 
 func EnumDevicesEx2(nTLayerType uint32, strManufacturerName string, enSortMethod int) (MvErrorCode, []MvCcDeviceInfo) {
-	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
+	var pstDevList MvCcDeviceInfoList
 
 	code := MvErrorCode(int32(C.MV_CC_EnumDevicesEx2(C.uint(nTLayerType), (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)), C.CString(strManufacturerName), C.MV_SORT_METHOD(enSortMethod))))
 	if code != MvOK {
 		return code, nil
 	}
 	var res []MvCcDeviceInfo
-	num := int(uint32(pstDevList.nDeviceNum))
+	num := int(pstDevList.DeviceNum)
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
+		res = append(res, *pstDevList.Device[i])
 	}
 
 	return code, res
 }
 
 func EnumDevicesByInterface(handle unsafe.Pointer) (MvErrorCode, []MvCcDeviceInfo) {
-	pstDevList := C.struct__MV_CC_DEVICE_INFO_LIST_{}
+	var pstDevList MvCcDeviceInfoList
 	code := MvErrorCode(int32(C.MV_CC_EnumDevicesByInterface(handle, (*C.struct__MV_CC_DEVICE_INFO_LIST_)(unsafe.Pointer(&pstDevList)))))
 	if code != MvOK {
 		return code, nil
 	}
 	var res []MvCcDeviceInfo
-	num := int(uint32(pstDevList.nDeviceNum))
+	num := int(pstDevList.DeviceNum)
 	for i := 0; i < num; i++ {
-		res = append(res, *(*MvCcDeviceInfo)(unsafe.Pointer(pstDevList.pDeviceInfo[i])))
+		res = append(res, *pstDevList.Device[i])
 	}
 	return code, res
 }
